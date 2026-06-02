@@ -94,14 +94,15 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-3">
-                <button onclick="toggleTracking()" class="border border-slate-200 hover:border-cnpTeal-base text-slate-600 hover:text-cnpTeal-base px-4 py-2.5 rounded-xl font-bold flex gap-2 items-center transition duration-300">
-                    <i class="fas fa-search-location"></i> <span class="hidden sm:inline">Track Order</span>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="toggleTracking()" class="border border-slate-200 hover:border-cnpTeal-base text-slate-600 hover:text-cnpTeal-base px-3 py-2 rounded-xl font-bold flex gap-1.5 items-center transition duration-300 text-xs sm:text-sm">
+                    <i class="fas fa-search-location text-cnpTeal-base"></i>
+                    <span>Track Order</span>
                 </button>
-                <button onclick="toggleCart()" class="bg-cnpTeal-base hover:bg-cnpTeal-700 text-white px-5 py-2.5 rounded-xl font-bold flex gap-2.5 items-center transition duration-300 shadow-sm hover:shadow active:scale-95">
+                <button onclick="toggleCart()" class="bg-cnpTeal-base hover:bg-cnpTeal-700 text-white px-3.5 py-2 rounded-xl font-bold flex gap-2 items-center transition duration-300 shadow-sm hover:shadow active:scale-95 text-xs sm:text-sm">
                     <i class="fas fa-shopping-basket text-sm"></i> 
                     <span>Cart</span> 
-                    <span id="cart-count" class="bg-cnpGold-500 text-black text-xs font-black px-2 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+                    <span id="cart-count" class="bg-cnpGold-500 text-black text-[10px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center">0</span>
                 </button>
             </div>
         </div>
