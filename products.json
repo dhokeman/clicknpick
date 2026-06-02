@@ -14,5 +14,13 @@
     "price": 850,
     "image": "Images/astronaut_light.jpg",
     "category": "Lighting"
+  },
+  {
+    "id": "P4",
+    "name": "Sleek Supercar Posters (Pack of 4)",
+    "description": "High-quality minimalist car posters of Chevy Corvette C8, Mercedes AMG GT, Nissan GTR R35, and Ferrari. Ideal for room decoration.",
+    "price": 300,
+    "image": "Images/car_posters.png",
+    "category": "Posters"
   }
 ]
