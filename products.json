@@ -22,5 +22,13 @@
     "price": 300,
     "image": "Images/car_posters.png",
     "category": "Posters"
+  },
+  {
+    "id": "P5",
+    "name": "Premium Quality Grass Broom (Jhadu)",
+    "description": "Traditional natural grass floor cleaning broom with a durable long-grip plastic handle. Perfect for keeping your hostel room clean and tidy.",
+    "price": 150,
+    "image": "Images/broom.jpg",
+    "category": "Essentials"
   }
 ]
