@@ -764,7 +764,7 @@
                         <div class="text-center py-10 bg-slate-50 rounded-2xl border border-slate-100">
                             <i class="fas fa-search text-3xl text-slate-300 mb-2"></i>
                             <p class="text-slate-500 font-bold text-sm">No orders found</p>
-                            <p class="text-xs text-slate-400 mt-1">We couldn't find any orders matching this number.</p>
+                            <p class="text-xs text-slate-400 mt-1">Please recheck your number or contact us if you need help.</p>
                         </div>`;
                 }
             } catch (err) {
@@ -772,8 +772,8 @@
                 resultsDiv.innerHTML = `
                     <div class="text-center py-10 bg-red-50 rounded-2xl border border-red-100">
                         <i class="fas fa-triangle-exclamation text-3xl text-red-400 mb-2"></i>
-                        <p class="text-red-700 font-bold text-sm">Error loading orders</p>
-                        <p class="text-xs text-red-500 mt-1">Make sure your Google Apps Script is updated and try again.</p>
+                        <p class="text-red-700 font-bold text-sm">Unable to retrieve orders</p>
+                        <p class="text-xs text-red-500 mt-1">Please recheck your number or contact us if the issue persists.</p>
                     </div>`;
             } finally {
                 btn.disabled = false;
