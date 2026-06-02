@@ -313,6 +313,60 @@
         </div>
     </div>
 
+    <!-- Product Details Modal (Blinkit style) -->
+    <div id="details-modal" class="fixed inset-0 bg-slate-900/60 z-50 hidden overflow-y-auto p-4 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative border border-slate-100 flex flex-col transition-all duration-300 scale-95 opacity-0" id="details-modal-card">
+            <!-- Close Button -->
+            <button onclick="closeProductDetails()" class="absolute right-4 top-4 z-10 w-9 h-9 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-slate-600 hover:text-slate-900 shadow-sm border border-slate-100/50 transition duration-200">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+            
+            <!-- Image Carousel Container -->
+            <div class="relative h-64 bg-slate-50 flex items-center justify-center overflow-hidden group select-none">
+                <div id="details-carousel-track" class="flex w-full h-full transition-transform duration-300 ease-out">
+                    <!-- Slides inserted dynamically -->
+                </div>
+                
+                <!-- Navigation Arrows (Hidden if single image) -->
+                <button id="carousel-prev" onclick="prevSlide(event)" class="absolute left-3 w-8 h-8 rounded-full bg-white/90 shadow flex items-center justify-center text-slate-700 hover:bg-white active:scale-95 transition opacity-0 group-hover:opacity-100">
+                    <i class="fas fa-chevron-left text-xs"></i>
+                </button>
+                <button id="carousel-next" onclick="nextSlide(event)" class="absolute right-3 w-8 h-8 rounded-full bg-white/90 shadow flex items-center justify-center text-slate-700 hover:bg-white active:scale-95 transition opacity-0 group-hover:opacity-100">
+                    <i class="fas fa-chevron-right text-xs"></i>
+                </button>
+                
+                <!-- Indicators (Dots) -->
+                <div id="carousel-dots" class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
+                    <!-- Dots inserted dynamically -->
+                </div>
+            </div>
+            
+            <!-- Details Area -->
+            <div class="p-6 space-y-4">
+                <div>
+                    <span id="details-category" class="bg-cnpTeal-50 text-cnpTeal-base text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border border-cnpTeal-100/40">Category</span>
+                    <h3 id="details-name" class="text-xl font-extrabold text-slate-900 leading-snug mt-2.5">Product Name</h3>
+                </div>
+                
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100/50">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Description</p>
+                    <p id="details-desc" class="text-sm text-slate-500 leading-relaxed">Product description text...</p>
+                </div>
+                
+                <!-- Action Footer -->
+                <div class="flex justify-between items-center pt-3 border-t border-slate-100">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Price</span>
+                        <span id="details-price" class="font-extrabold text-2xl text-slate-900">₹0</span>
+                    </div>
+                    <div id="details-action-btn">
+                        <!-- ADD or Qty selectors inserted dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Original JavaScript Operations (Unbroken) -->
     <script>
         let products = [];
@@ -334,9 +388,9 @@
         function renderProducts() {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = products.map(p => `
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-premium-hover hover:-translate-y-1">
+                <div onclick="openProductDetails('${p.id}')" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-premium-hover hover:-translate-y-1 cursor-pointer">
                     <div class="h-44 bg-slate-50 flex items-center justify-center relative overflow-hidden group">
-                        ${p.image ? `<img src="${p.image}" loading="lazy" alt="${p.name}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">` : `<i class="fas fa-box text-5xl text-slate-300"></i>`}
+                        ${p.image ? `<img src="${Array.isArray(p.image) ? p.image[0] : p.image}" loading="lazy" alt="${p.name}" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500">` : `<i class="fas fa-box text-5xl text-slate-300"></i>`}
                         <span class="absolute top-3 left-3 bg-cnpTeal-base text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm">${p.category || 'Essential'}</span>
                     </div>
                     <div class="p-5 flex-grow flex flex-col justify-between">
@@ -350,12 +404,12 @@
                                 <span class="font-extrabold text-xl text-slate-900">₹${p.price}</span>
                             </div>
                             ${cart[p.id] ? 
-                                `<div class="flex items-center bg-cnpGold-500 text-black rounded-xl font-bold shadow-sm ring-2 ring-cnpGold-100">
+                                `<div onclick="event.stopPropagation()" class="flex items-center bg-cnpGold-500 text-black rounded-xl font-bold shadow-sm ring-2 ring-cnpGold-100">
                                     <button onclick="updateQty('${p.id}', -1)" class="px-3.5 py-2 hover:bg-cnpGold-600 transition rounded-l-xl">-</button>
                                     <span class="px-2 text-sm">${cart[p.id]}</span>
                                     <button onclick="updateQty('${p.id}', 1)" class="px-3.5 py-2 hover:bg-cnpGold-600 transition rounded-r-xl">+</button>
                                 </div>` :
-                                `<button onclick="updateQty('${p.id}', 1)" class="border-2 border-cnpTeal-base text-cnpTeal-base hover:bg-cnpTeal-base hover:text-white px-5 py-1.5 rounded-xl font-bold transition duration-300 shadow-sm flex items-center gap-1.5">
+                                `<button onclick="event.stopPropagation(); updateQty('${p.id}', 1)" class="border-2 border-cnpTeal-base text-cnpTeal-base hover:bg-cnpTeal-base hover:text-white px-5 py-1.5 rounded-xl font-bold transition duration-300 shadow-sm flex items-center gap-1.5">
                                     <i class="fas fa-plus text-xs"></i> ADD
                                 </button>`
                             }
@@ -370,6 +424,9 @@
             if(cart[id] <= 0) delete cart[id];
             updateCart();
             renderProducts();
+            if (activeProduct && activeProduct.id === id) {
+                updateDetailsActionBtn();
+            }
         }
 
         function updateCart() {
@@ -463,6 +520,179 @@
                 }
             };
         }
+
+        // Details Modal Variables & Carousel Swipe Gesture Support (Blinkit style)
+        let activeProduct = null;
+        let currentSlide = 0;
+        let slideImages = [];
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function openProductDetails(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+            activeProduct = p;
+            currentSlide = 0;
+            
+            // Extract images (supports single image path or multiple in an array)
+            if (Array.isArray(p.image)) {
+                slideImages = p.image;
+            } else if (p.image) {
+                slideImages = [p.image];
+            } else {
+                slideImages = [];
+            }
+            
+            // Populate text details
+            document.getElementById('details-category').innerText = p.category || 'Essential';
+            document.getElementById('details-name').innerText = p.name;
+            document.getElementById('details-desc').innerText = p.description || 'No description available for this product.';
+            document.getElementById('details-price').innerText = `₹${p.price}`;
+            
+            // Build slides
+            const track = document.getElementById('details-carousel-track');
+            if (slideImages.length > 0) {
+                track.innerHTML = slideImages.map(img => `
+                    <div class="w-full h-full flex-shrink-0 flex items-center justify-center p-6 bg-slate-50/50">
+                        <img src="${img}" alt="${p.name}" class="max-w-full max-h-full object-contain rounded-2xl select-none pointer-events-none">
+                    </div>
+                `).join('');
+            } else {
+                track.innerHTML = `
+                    <div class="w-full h-full flex-shrink-0 flex items-center justify-center bg-slate-50">
+                        <i class="fas fa-box text-6xl text-slate-200"></i>
+                    </div>`;
+            }
+            
+            // Touch Swipe listeners (supports touch gestures like Blinkit)
+            const carouselTrack = document.getElementById('details-carousel-track');
+            carouselTrack.innerHTML = track.innerHTML; // re-bind events cleanly
+            carouselTrack.addEventListener('touchstart', handleTouchStart, { passive: true });
+            carouselTrack.addEventListener('touchend', handleTouchEnd, { passive: true });
+            
+            // Display arrows & dot indicators
+            updateCarousel();
+            
+            // Render cart state inside popup
+            updateDetailsActionBtn();
+            
+            // Open modal with smooth animation
+            const modal = document.getElementById('details-modal');
+            const card = document.getElementById('details-modal-card');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeProductDetails() {
+            const modal = document.getElementById('details-modal');
+            const card = document.getElementById('details-modal-card');
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                activeProduct = null;
+            }, 200);
+        }
+
+        // Swipe events implementation
+        function handleTouchStart(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }
+
+        function handleTouchEnd(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }
+
+        function handleSwipe() {
+            const distance = touchStartX - touchEndX;
+            const threshold = 40; // minimum swipe distance
+            
+            if (distance > threshold) {
+                // Swiped left -> show next
+                if (currentSlide < slideImages.length - 1) {
+                    currentSlide++;
+                    updateCarousel();
+                }
+            } else if (distance < -threshold) {
+                // Swiped right -> show previous
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateCarousel();
+                }
+            }
+        }
+
+        function prevSlide(e) {
+            if (e) e.stopPropagation();
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateCarousel();
+            }
+        }
+
+        function nextSlide(e) {
+            if (e) e.stopPropagation();
+            if (currentSlide < slideImages.length - 1) {
+                currentSlide++;
+                updateCarousel();
+            }
+        }
+
+        function goToSlide(idx) {
+            currentSlide = idx;
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const track = document.getElementById('details-carousel-track');
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            const prev = document.getElementById('carousel-prev');
+            const next = document.getElementById('carousel-next');
+            
+            if (slideImages.length > 1) {
+                prev.style.display = currentSlide === 0 ? 'none' : 'flex';
+                next.style.display = currentSlide === slideImages.length - 1 ? 'none' : 'flex';
+            } else {
+                prev.style.display = 'none';
+                next.style.display = 'none';
+            }
+            
+            // Build dot indicators
+            const dots = document.getElementById('carousel-dots');
+            if (slideImages.length > 1) {
+                dots.innerHTML = slideImages.map((_, i) => `
+                    <button onclick="goToSlide(${i})" class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-cnpTeal-base w-3.5' : 'bg-slate-300'}"></button>
+                `).join('');
+            } else {
+                dots.innerHTML = '';
+            }
+        }
+
+        function updateDetailsActionBtn() {
+            const btnContainer = document.getElementById('details-action-btn');
+            if (!activeProduct) return;
+            const p = activeProduct;
+            
+            if (cart[p.id]) {
+                btnContainer.innerHTML = `
+                    <div class="flex items-center bg-cnpGold-500 text-black rounded-xl font-bold shadow-sm ring-2 ring-cnpGold-100">
+                        <button onclick="updateQty('${p.id}', -1)" class="px-4 py-2.5 hover:bg-cnpGold-600 transition rounded-l-xl">-</button>
+                        <span class="px-3.5 text-sm">${cart[p.id]}</span>
+                        <button onclick="updateQty('${p.id}', 1)" class="px-4 py-2.5 hover:bg-cnpGold-600 transition rounded-r-xl">+</button>
+                    </div>`;
+            } else {
+                btnContainer.innerHTML = `
+                    <button onclick="updateQty('${p.id}', 1)" class="bg-cnpTeal-base hover:bg-cnpTeal-700 text-white px-6 py-2.5 rounded-xl font-bold transition duration-300 shadow-sm flex items-center gap-1.5">
+                        <i class="fas fa-plus text-xs"></i> ADD TO BASKET
+                    </button>`;
+            }
+        }
+
         window.onload = init;
     </script>
 </body>
